@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">VeciApp</string>
+
+    <!--MAIN ACTIVITY-->
+    <string name="Btn_Login">Login</string>
+    <string name="Btn_Registro">Registro</string>
+
+    <!--ACTIVIDAD REGISTRO-->
+    <string name="CrearCuentaTXT">Agregar Residente</string>
+    <string name="NombreEt">Nombre y Apellido</string>
+    <string name="CorreoEt">Correo electronico</string>
+    <string name="ContraseñaEt">Contraseña</string>
+    <string name="ConfirmarContraseñaEt">Confirmar contraseña</string>
+    <string name="RegistrarUsuario">Registrar</string>
+
+    <!--MENU PRINCIPAL ADMIN-->
+    <string name="BienvenidoPrincipal"> Bienvenido(a)</string>
+    <string name="NombresPrincipal"> -- </string>
+    <string name="CorreoPrincipal"> -- </string>
+
+
+    <string name="AgregarResidente">Agregar Residente</string>
+    <string name="CrearGastoComun">Crear Gasto Común</string>
+    <string name="ListarResidentes">Ver Residentes</string>
+    <string name="CerrarSesion">Salir</string>
+    <string name="Perfil">Mi Perfil</string>
+    <string name="AcercaDe">Acerca De</string>
+
+    <!--MENU PRINCIPAL USUARIO -->
+    <string name="BienvenidoPrincipalUsuario"> Bienvenido(a) Residente</string>
+    <string name="NombresPrincipalUsuario"> -- </string>
+    <string name="CorreoPrincipalUsuario"> -- </string>
+
+
+    <string name="PagarCuentas">Pagar Cuentas</string>
+    <string name="Marketplace">MarketPlace</string>
+    <string name="ReservaEstacionamiento">Resevar Estacionamientos</string>
+    <string name="CerrarSesionU">Salir</string>
+    <string name="PerfilU">Mi Perfil</string>
+    <string name="AcercaDeU">Acerca De</string>
+
+    <!--ACTIVIDAD LOGIN-->
+    <string name="IniciarSesionTXT">Iniciar Sesion</string>
+    <string name="CorreoLogin">Correo</string>
+    <string name="PassLogin">Contraseña</string>
+    <string name="Btn_Logeo">Ingresar</string>
+    <string name="Ayuda">¿No tienes una cuenta? Contactate con el administrador</string>
+    
+    <!--ITEM USUARIO-->
+    <string name="Id_Usuario_Listar">ID Usuario</string>
+    <string name="ListarNombre">Nombre y Apellido</string>
+    <string name="ListarCorreo">Correo electronico</string>
+
+
+</resources>

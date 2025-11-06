@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "429103180793",
+    "project_id": "veciapp-87728",
+    "storage_bucket": "veciapp-87728.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429103180793:android:096d008c20b861ac35ab28",
+        "android_client_info": {
+          "package_name": "com.example.proyecto_de_integracion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD260BbIEH4TCXuLSISK9i4acv0d5zCnbM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
