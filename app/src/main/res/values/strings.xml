@@ -7,9 +7,13 @@
 
     <!--ACTIVIDAD REGISTRO-->
     <string name="CrearCuentaTXT">Agregar Residente</string>
+    <string name="runEt">RUT</string>
     <string name="NombreEt">Nombre y Apellido</string>
     <string name="CorreoEt">Correo electronico</string>
+    <string name="NumeroDeptoEt">Número de departamento</string>
+    <string name="CoefcopropiedadEt">Coeficiente de copropiedad</string>
     <string name="ContraseñaEt">Contraseña</string>
+    <string name="M2DptoEt">M2 del departamento</string>
     <string name="ConfirmarContraseñaEt">Confirmar contraseña</string>
     <string name="RegistrarUsuario">Registrar</string>
 
@@ -45,7 +49,7 @@
     <string name="PassLogin">Contraseña</string>
     <string name="Btn_Logeo">Ingresar</string>
     <string name="Ayuda">¿No tienes una cuenta? Contactate con el administrador</string>
-    
+
     <!--ITEM USUARIO-->
     <string name="Id_Usuario_Listar">ID Usuario</string>
     <string name="ListarNombre">Nombre y Apellido</string>

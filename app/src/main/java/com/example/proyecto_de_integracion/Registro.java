@@ -23,20 +23,26 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
 public class Registro extends AppCompatActivity {
 
-    EditText NombreEt, CorreoEt, ContraseñaEt, ConfirmarContraseñaEt;
+    EditText NombreEt, CorreoEt, ContraseñaEt, ConfirmarContraseñaEt, runEt, NumeroDeptoEt, CoefcopropiedadEt, M2DptoEt;
     Button RegistrarUsuario;
 
     FirebaseAuth firebaseAuth;
     ProgressDialog progressDialog;
 
-    String nombre = " ", correo = " ", password = "", confirmarpassword = "";
+    // Referencia a "Usuarios" para validar RUT duplicado
+    private DatabaseReference refUsuarios;
+
+    String nombre = " ", correo = " ", password = "", confirmarpassword = "", run = "", numerodepto = "", coefcopropiedad = "", m2depto = "";
 
 
     @Override
@@ -55,8 +61,13 @@ public class Registro extends AppCompatActivity {
         ContraseñaEt = findViewById(R.id.ContraseñaEt);
         ConfirmarContraseñaEt = findViewById(R.id.ConfirmarContraseñaEt);
         RegistrarUsuario = findViewById(R.id.RegistrarUsuario);
+        runEt = findViewById(R.id.runEt);
+        NumeroDeptoEt = findViewById(R.id.NumeroDeptoEt);
+        CoefcopropiedadEt = findViewById(R.id.CoefcopropiedadEt);
+        M2DptoEt = findViewById(R.id.M2DptoEt);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        refUsuarios = FirebaseDatabase.getInstance().getReference("Usuarios");
 
         progressDialog = new ProgressDialog(Registro.this);
         progressDialog.setTitle("Espere Por favor");
@@ -65,12 +76,9 @@ public class Registro extends AppCompatActivity {
         RegistrarUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 ValidarDatos();
-
             }
         });
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -80,29 +88,163 @@ public class Registro extends AppCompatActivity {
     }
 
     private void ValidarDatos(){
-        nombre = NombreEt.getText().toString();
-        correo = CorreoEt.getText().toString();
+        nombre = NombreEt.getText().toString().trim();
+        correo = CorreoEt.getText().toString().trim();
         password = ContraseñaEt.getText().toString();
         confirmarpassword = ConfirmarContraseñaEt.getText().toString();
+        run = runEt.getText().toString().trim();
+        numerodepto = NumeroDeptoEt.getText().toString().trim();
+        coefcopropiedad = CoefcopropiedadEt.getText().toString().trim();
+        m2depto = M2DptoEt.getText().toString().trim();
 
         if (TextUtils.isEmpty(nombre)){
             Toast.makeText(this, "Ingrese nombre", Toast.LENGTH_SHORT).show();
         }
         else if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()){
-            Toast.makeText(this, "Ingrese correo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Ingrese correo válido", Toast.LENGTH_SHORT).show();
         }
-        else if (TextUtils.isEmpty(password)){
-            Toast.makeText(this, "Ingrese contraseña", Toast.LENGTH_SHORT).show();
+        else if (TextUtils.isEmpty(run)){
+            Toast.makeText(this, "Ingrese un RUT", Toast.LENGTH_SHORT).show();
         }
-        else if (TextUtils.isEmpty(confirmarpassword)){
-            Toast.makeText(this, "Confirme contraseña", Toast.LENGTH_SHORT).show();
+        else if (!esRutValido(run)){
+            Toast.makeText(this, "Ingrese un RUT válido", Toast.LENGTH_SHORT).show();
         }
-        else if (!password.equals(confirmarpassword)){
-            Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+        else if (TextUtils.isEmpty(numerodepto)){
+            Toast.makeText(this, "Ingrese un Número de departamento", Toast.LENGTH_SHORT).show();
+        }
+        // SOLO NÚMEROS EN NÚMERO DEPTO
+        else if (!numerodepto.matches("\\d+")){
+            Toast.makeText(this, "El número de departamento solo debe contener dígitos", Toast.LENGTH_SHORT).show();
+        }
+        else if (TextUtils.isEmpty(coefcopropiedad)){
+            Toast.makeText(this, "Ingrese coeficiente de copropiedad", Toast.LENGTH_SHORT).show();
         }
         else {
-            CrearCuenta();
+            // Validar coeficiente numérico y rango (0,1]
+            double coef;
+            try {
+                coef = Double.parseDouble(coefcopropiedad.replace(",", "."));
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "El coeficiente de copropiedad debe ser numérico (use punto para decimales)", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (coef <= 0 || coef > 1) {
+                Toast.makeText(this, "El coeficiente de copropiedad debe estar entre 0 y 1", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (TextUtils.isEmpty(m2depto)){
+                Toast.makeText(this, "Ingrese metros cuadrados del departamento", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Validar m2 numérico y positivo
+            double m2;
+            try {
+                m2 = Double.parseDouble(m2depto.replace(",", "."));
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Los metros cuadrados deben ser numéricos (use punto para decimales)", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (m2 <= 0) {
+                Toast.makeText(this, "Los metros cuadrados deben ser mayores a 0", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (TextUtils.isEmpty(password)){
+                Toast.makeText(this, "Ingrese contraseña", Toast.LENGTH_SHORT).show();
+            }
+            else if (TextUtils.isEmpty(confirmarpassword)){
+                Toast.makeText(this, "Confirme contraseña", Toast.LENGTH_SHORT).show();
+            }
+            else if (!password.equals(confirmarpassword)){
+                Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                // Si todo es válido, seguimos con la verificación de RUT en Firebase
+                verificarRutNoDuplicado(run);
+            }
         }
+    }
+
+
+    /**
+     * Valida RUT chileno con dígito verificador.
+     */
+    private boolean esRutValido(String rut) {
+        if (rut == null) return false;
+
+        rut = rut.toUpperCase().replace(".", "").replace("-", "");
+
+        if (rut.length() < 2) return false;
+
+        String cuerpo = rut.substring(0, rut.length() - 1);
+        char dvIngresado = rut.charAt(rut.length() - 1);
+
+        if (!cuerpo.matches("\\d+")) return false;
+
+        int suma = 0;
+        int factor = 2;
+
+        for (int i = cuerpo.length() - 1; i >= 0; i--) {
+            int digit = Character.getNumericValue(cuerpo.charAt(i));
+            suma += digit * factor;
+            factor++;
+            if (factor > 7) {
+                factor = 2;
+            }
+        }
+
+        int resto = suma % 11;
+        int dvCalculadoNum = 11 - resto;
+        char dvCalculado;
+
+        if (dvCalculadoNum == 11) {
+            dvCalculado = '0';
+        } else if (dvCalculadoNum == 10) {
+            dvCalculado = 'K';
+        } else {
+            dvCalculado = (char) (dvCalculadoNum + '0');
+        }
+
+        return dvIngresado == dvCalculado;
+    }
+
+    /**
+     * Verifica en Firebase que el RUT no esté ya registrado.
+     */
+    private void verificarRutNoDuplicado(String runIngresado) {
+
+        String rutLimpio = runIngresado.toUpperCase().replace(".", "").replace("-", "");
+
+        progressDialog.setMessage("Verificando RUT...");
+        progressDialog.show();
+
+        refUsuarios.orderByChild("run").equalTo(rutLimpio)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            progressDialog.dismiss();
+                            Toast.makeText(Registro.this,
+                                    "El RUT ya se encuentra registrado",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            // No existe, se continúa con la creación de cuenta
+                            CrearCuenta();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(Registro.this,
+                                "Error al verificar RUT: " + error.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void CrearCuenta() {
@@ -185,20 +327,24 @@ public class Registro extends AppCompatActivity {
         }).start();
     }
 
-
-
-
     private void GuardarInformacion() {
         progressDialog.setMessage("Guardando información...");
+        // aquí podrías usar show() si quieres ver este estado aparte
         progressDialog.dismiss();
 
         String uid = firebaseAuth.getUid();
+        // Guardamos siempre el RUT en formato limpio
+        String rutLimpio = run.toUpperCase().replace(".", "").replace("-", "");
 
         HashMap<String, String> Datos = new HashMap<>();
         Datos.put("uid", uid);
         Datos.put("correo", correo);
         Datos.put("nombres", nombre);
         Datos.put("password", password);
+        Datos.put("run", rutLimpio);
+        Datos.put("numerodepto", numerodepto);
+        Datos.put("coefcopropiedad", coefcopropiedad);
+        Datos.put("m2depto", m2depto);
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Usuarios");
         databaseReference.child(uid)

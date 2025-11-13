@@ -49,6 +49,24 @@
                 android:layout_height="wrap_content"/>
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
+
+            <EditText
+                android:id="@+id/runEt"
+                android:hint="@string/runEt"
+                android:inputType="textPersonName|textCapWords"
+                android:padding="20dp"
+                android:drawableStart="@drawable/icono_rut"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/worksans"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
         
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -67,6 +85,64 @@
                 android:layout_height="wrap_content"/>
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
+
+            <EditText
+                android:id="@+id/NumeroDeptoEt"
+                android:hint="@string/NumeroDeptoEt"
+                android:inputType="textPersonName|textCapWords"
+                android:padding="20dp"
+                android:drawableStart="@drawable/icono_numero_apartamento"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/worksans"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
+
+            <EditText
+                android:id="@+id/M2DptoEt"
+                android:hint="@string/M2DptoEt"
+                android:inputType="textPersonName|textCapWords"
+                android:padding="20dp"
+                android:drawableStart="@drawable/icono_m2_depto"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/worksans"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
+
+            <EditText
+                android:id="@+id/CoefcopropiedadEt"
+                android:hint="@string/CoefcopropiedadEt"
+                android:inputType="textPersonName|textCapWords"
+                android:padding="20dp"
+                android:drawableStart="@drawable/icono_coef"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/worksans"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

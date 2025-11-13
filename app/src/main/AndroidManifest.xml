@@ -11,10 +11,11 @@
         android:roundIcon="@mipmap/icono_veciapp_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyecto_de_Integracion">
+
         <activity
             android:name=".MenuUsuario"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".MenuPrincipal"
             android:exported="false"
