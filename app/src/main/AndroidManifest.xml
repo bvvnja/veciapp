@@ -11,7 +11,16 @@
         android:roundIcon="@mipmap/icono_veciapp_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyecto_de_Integracion">
-
+        <activity
+            android:name=".ReciclerViewPagarCuenta"
+            android:exported="false" />
+        <activity
+            android:name=".PagarCuentas"
+            android:exported="false" />
+        <activity
+            android:name=".Crear_Gasto_Comun"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".MenuUsuario"
             android:exported="false"

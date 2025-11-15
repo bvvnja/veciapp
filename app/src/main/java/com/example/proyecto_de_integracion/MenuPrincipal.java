@@ -29,7 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MenuPrincipal extends AppCompatActivity {
 
-    Button AgregarResidente, ListarResidentes, CrearGastoComun, Perfil, AcercaDe, CerrarSesion;
+    Button AgregarResidente, ListarResidentes, Crear_Gasto_Comun, Perfil, AcercaDe, CerrarSesion;
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
 
@@ -56,6 +56,7 @@ public class MenuPrincipal extends AppCompatActivity {
 
         CerrarSesion = findViewById(R.id.CerrarSesion);
         AgregarResidente = findViewById(R.id.AgregarResidente);
+        Crear_Gasto_Comun = findViewById(R.id.Crear_Gasto_Comun);
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
 
@@ -70,6 +71,13 @@ public class MenuPrincipal extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MenuPrincipal.this, Registro.class));
+            }
+        });
+
+        Crear_Gasto_Comun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuPrincipal.this, Crear_Gasto_Comun.class));
             }
         });
 

@@ -24,7 +24,7 @@
 
 
     <string name="AgregarResidente">Agregar Residente</string>
-    <string name="CrearGastoComun">Crear Gasto Común</string>
+    <string name="Crear_Gasto_Comun">Crear Gasto Común</string>
     <string name="ListarResidentes">Ver Residentes</string>
     <string name="CerrarSesion">Salir</string>
     <string name="Perfil">Mi Perfil</string>
@@ -54,6 +54,18 @@
     <string name="Id_Usuario_Listar">ID Usuario</string>
     <string name="ListarNombre">Nombre y Apellido</string>
     <string name="ListarCorreo">Correo electronico</string>
+
+    <!--ACTIVIDAD CREAR GASTO COMUN-->
+    <string name="txtTituloGenerar">Generar gastos comunes del mes</string>
+    <string name="txtLabelMes">Mes</string>
+    <string name="txtLabelAnio">Año</string>
+    <string name="EtAnio">Ej: 2025</string>
+    <string name="txtLabelTotalEdificio">Total gastos comunes del edificio</string>
+    <string name="EtTotalGastosEdificio">Ej: 2450000</string>
+    <string name="txtLabelDescripcion">Descripción (opcional)</string>
+    <string name="EtDescripcion">Ej: Gastos de octubre (sueldos, mantenciones, luz, agua)</string>
+    <string name="txtResumen">Se generarán las deudas para todos los departamentos.</string>
+    <string name="btnGenerarGastos">Generar gastos del mes</string>
 
 
 </resources>

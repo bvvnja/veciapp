@@ -156,8 +156,8 @@
                         android:src="@drawable/crear_gastocomun"/>
 
                     <Button
-                        android:id="@+id/CrearGastoComun"
-                        android:text="@string/CrearGastoComun"
+                        android:id="@+id/Crear_Gasto_Comun"
+                        android:text="@string/Crear_Gasto_Comun"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"

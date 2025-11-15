@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5"
+    android:padding="16dp"
+    tools:context=".Pagar_Cuentas_Activity">
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/txtTituloPagar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mis gastos comunes"
+        android:fontFamily="@font/worksans"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Resumen de deuda -->
+    <TextView
+        android:id="@+id/txtResumenDeuda"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Deuda total: $0"
+        android:fontFamily="@font/worksans"
+        android:textSize="16sp"
+        android:textColor="#555555"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Botón gestionar tarjeta -->
+    <Button
+        android:id="@+id/btnGestionarTarjeta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gestionar tarjeta / pago automático"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:fontFamily="@font/worksans"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Texto sección -->
+    <TextView
+        android:id="@+id/txtSubtituloCobranzas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gastos comunes del departamento"
+        android:fontFamily="@font/worksans"
+        android:textSize="14sp"
+        android:textColor="#777777"
+        android:layout_marginBottom="6dp"/>
+
+    <!-- Lista de cobranzas -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerCobranzas"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp"
+        tools:listitem="@layout/item_cobranza"/>
+
+</LinearLayout>
