@@ -57,6 +57,8 @@ public class MenuPrincipal extends AppCompatActivity {
         CerrarSesion = findViewById(R.id.CerrarSesion);
         AgregarResidente = findViewById(R.id.AgregarResidente);
         Crear_Gasto_Comun = findViewById(R.id.Crear_Gasto_Comun);
+        ListarResidentes = findViewById(R.id.ListarResidentes);
+
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
 
@@ -78,6 +80,13 @@ public class MenuPrincipal extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MenuPrincipal.this, Crear_Gasto_Comun.class));
+            }
+        });
+
+        ListarResidentes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuPrincipal.this, user_profiles.class));
             }
         });
 

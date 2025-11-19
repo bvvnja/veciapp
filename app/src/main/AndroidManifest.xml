@@ -12,11 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyecto_de_Integracion">
         <activity
-            android:name=".ReciclerViewPagarCuenta"
-            android:exported="false" />
+            android:name=".PerfilUsuario"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
         <activity
-            android:name=".PagarCuentas"
-            android:exported="false" />
+            android:name=".EditarUsuario"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".user_profiles"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".Pagar_Cuentas"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".Crear_Gasto_Comun"
             android:exported="false"

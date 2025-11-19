@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#ffffff">
+
+    <!-- Título de la actividad -->
+    <TextView
+        android:id="@+id/tvEditUserTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Editar Usuario"
+        android:textSize="24sp"
+        android:fontFamily="@font/worksans"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center"/>
+
+    <!-- Campo para el nombre -->
+    <EditText
+        android:id="@+id/edtName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre"
+        android:textSize="16sp"
+        android:fontFamily="@font/worksans"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:backgroundTint="#ddd"/>
+
+    <!-- Campo para el correo -->
+    <EditText
+        android:id="@+id/edtEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/worksans"
+        android:hint="Correo electrónico"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:backgroundTint="#ddd"/>
+
+    <EditText
+        android:id="@+id/passwordU"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/worksans"
+        android:hint="Contraseña"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:backgroundTint="#ddd"/>
+
+    <!-- Campo para el coeficiente de propiedad -->
+    <EditText
+        android:id="@+id/edtCoefPropiedad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/worksans"
+        android:hint="Coef. propiedad"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:backgroundTint="#ddd"/>
+
+    <!-- Campo para el número de departamento -->
+    <EditText
+        android:id="@+id/edtNumDepto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Número de departamento"
+        android:fontFamily="@font/worksans"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:backgroundTint="#ddd"/>
+
+    <!-- Botón para guardar los cambios -->
+    <Button
+        android:id="@+id/btnSaveChanges"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Guardar Cambios"
+        android:fontFamily="@font/worksans"
+        android:backgroundTint="#008CBA"
+        android:textColor="#ffffff"
+        android:padding="16dp"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

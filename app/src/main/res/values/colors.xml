@@ -5,4 +5,7 @@
 
     <color name="colorPrimary">#1976D2</color>
     <color name="ColorPrimaryDark">#64B5F6</color>
+
+    <color name="red">#FF6347</color>
+    <color name="green">#008CBA</color>
 </resources>

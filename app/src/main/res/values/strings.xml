@@ -67,5 +67,19 @@
     <string name="txtResumen">Se generarán las deudas para todos los departamentos.</string>
     <string name="btnGenerarGastos">Generar gastos del mes</string>
 
+    <!--ACTIVITY PAGAR CUENTAS -->
+
+    <string name="txtTituloPagar">Mis gastos comunes</string>
+    <string name="txtResumenDeuda">Deuda total: $0</string>
+    <string name="btnGestionarTarjeta">Gestionar tarjeta / pago automático</string>
+    <string name="txtSubtituloCobranzas">Gastos comunes del departamento</string>
+    <string name="btnPagarAhora">Pagar ahora</string>
+
+    <!--ACTIVITY RECYCLERVIEW-->
+    <string name="txtEstadoPendiente">Pendiente</string>
+    <string name="txtEstadoPagado">Pagado</string>
+    <string name="txtDescripcionGastos">Gastos del mes (sueldos, mantenciones, luz, agua)</string>
+    <string name="txtMesCobranza">Octubre 2025</string>
+
 
 </resources>

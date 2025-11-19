@@ -24,6 +24,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Login extends AppCompatActivity {
 
@@ -110,21 +115,44 @@ public class Login extends AppCompatActivity {
                                         return;
                                     }
 
-                                    // ⚠️ Para los demás, verificar que el correo esté confirmado
-                                    if (!user.isEmailVerified()) {
-                                        Toast.makeText(Login.this,
-                                                "Debe verificar su correo antes de iniciar sesión.",
-                                                Toast.LENGTH_LONG).show();
-                                        firebaseAuth.signOut();
-                                        return;
-                                    }
+                                    // ⚠️ Para los demás, verificar si la cuenta está activa
+                                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(user.getUid());
+                                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Boolean isActive = dataSnapshot.child("activo").getValue(Boolean.class); // Usamos Boolean en lugar de boolean
 
-                                    // 🔹 Si el correo está verificado y no es admin
-                                    Toast.makeText(Login.this,
-                                            "Bienvenido(a): " + correoActual,
-                                            Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(Login.this, MenuUsuario.class));
-                                    finish();
+                                            // Si la cuenta está desactivada
+                                            if (isActive == null || !isActive) {
+                                                Toast.makeText(Login.this,
+                                                        "Cuenta desactivada. Comunícate con el administrador para activarla.",
+                                                        Toast.LENGTH_LONG).show();
+                                                firebaseAuth.signOut();  // Cerrar sesión si la cuenta está desactivada
+                                                return;
+                                            }
+
+                                            // ⚠️ Verificar que el correo esté confirmado
+                                            if (!user.isEmailVerified()) {
+                                                Toast.makeText(Login.this,
+                                                        "Debe verificar su correo antes de iniciar sesión.",
+                                                        Toast.LENGTH_LONG).show();
+                                                firebaseAuth.signOut();
+                                                return;
+                                            }
+
+                                            // 🔹 Si el correo está verificado y la cuenta está activa
+                                            Toast.makeText(Login.this,
+                                                    "Bienvenido(a): " + correoActual,
+                                                    Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(Login.this, MenuUsuario.class));
+                                            finish();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            Toast.makeText(Login.this, "Error al verificar el estado de la cuenta", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 });
                             }
                         } else {
@@ -142,6 +170,7 @@ public class Login extends AppCompatActivity {
                     }
                 });
     }
+
 
     @Override
     public boolean onSupportNavigateUp() {

@@ -3,6 +3,7 @@ package com.example.proyecto_de_integracion;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -80,25 +81,16 @@ public class Crear_Gasto_Comun extends AppCompatActivity {
         btnGenerarGastos.setOnClickListener(v -> validarYGenerar());
     }
 
-
-
     private void configurarSpinnerMeses() {
         String[] meses = {
                 "Seleccionar mes",    // <- aquí pones la frase que tú quieras
                 "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         };
-        ArrayAdapter<String> adapterMeses = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                meses
-        );
+        ArrayAdapter<String> adapterMeses = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, meses);
         adapterMeses.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMes.setAdapter(adapterMeses);
     }
-
-
-
 
     private void validarYGenerar() {
         String mesSeleccionado = spinnerMes.getSelectedItem().toString();
@@ -195,9 +187,9 @@ public class Crear_Gasto_Comun extends AppCompatActivity {
                         continue;
                     }
 
-                    double coef;
+                    double coef = 0;
                     try {
-                        coef = Double.parseDouble(coefStr.replace(",", "."));
+                        coef = Double.parseDouble(coefStr.replace(",", ".")); // Convertir a Double
                     } catch (NumberFormatException e) {
                         // coeficiente malo, lo saltamos
                         continue;
@@ -212,11 +204,11 @@ public class Crear_Gasto_Comun extends AppCompatActivity {
 
                     // Nodo: Cobranzas/AAAA-MM/uid
                     DatabaseReference refCobroUsuario = refCobranzas
-                            .child(claveMes)
-                            .child(uid);
+                            .child(uid)
+                            .child(claveMes);
 
                     HashMap<String, Object> datosCobro = new HashMap<>();
-                    datosCobro.put("uidUsuario", uid);
+                    datosCobro.put("uidUsuario", uid);  // Establecer el uidUsuario
                     datosCobro.put("nombres", nombres);
                     datosCobro.put("numeroDepto", numerodepto);
                     datosCobro.put("mesClave", claveMes);
@@ -249,6 +241,7 @@ public class Crear_Gasto_Comun extends AppCompatActivity {
             }
         });
     }
+
 
     @Override
     public boolean onSupportNavigateUp() {

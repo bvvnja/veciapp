@@ -98,7 +98,7 @@
                         android:src="@drawable/pagar_cuentas"/>
 
                     <Button
-                        android:id="@+id/PagarCuentas"
+                        android:id="@+id/Pagar_Cuentas"
                         android:text="@string/PagarCuentas"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -180,7 +180,7 @@
                         android:src="@drawable/perfil"/>
 
                     <Button
-                        android:id="@+id/Perfil"
+                        android:id="@+id/MiPerfil"
                         android:text="@string/Perfil"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

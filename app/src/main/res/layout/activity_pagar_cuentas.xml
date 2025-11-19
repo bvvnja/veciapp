@@ -7,15 +7,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#F5F5F5"
-    android:padding="16dp"
-    tools:context=".Pagar_Cuentas_Activity">
+    android:padding="16dp">
 
     <!-- Título -->
     <TextView
         android:id="@+id/txtTituloPagar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mis gastos comunes"
+        android:text="@string/txtTituloPagar"
         android:fontFamily="@font/worksans"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -28,7 +27,7 @@
         android:id="@+id/txtResumenDeuda"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Deuda total: $0"
+        android:text="@string/txtResumenDeuda"
         android:fontFamily="@font/worksans"
         android:textSize="16sp"
         android:textColor="#555555"
@@ -40,7 +39,7 @@
         android:id="@+id/btnGestionarTarjeta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gestionar tarjeta / pago automático"
+        android:text="@string/btnGestionarTarjeta"
         android:textAllCaps="false"
         android:textSize="14sp"
         android:fontFamily="@font/worksans"
@@ -51,7 +50,7 @@
         android:id="@+id/txtSubtituloCobranzas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gastos comunes del departamento"
+        android:text="@string/txtSubtituloCobranzas"
         android:fontFamily="@font/worksans"
         android:textSize="14sp"
         android:textColor="#777777"
@@ -65,6 +64,6 @@
         android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingBottom="8dp"
-        tools:listitem="@layout/item_cobranza"/>
+        tools:listitem="@layout/activity_item_cobranza"/>
 
 </LinearLayout>

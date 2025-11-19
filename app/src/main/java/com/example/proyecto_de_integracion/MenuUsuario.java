@@ -29,7 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MenuUsuario extends AppCompatActivity {
 
-    Button PagarCuentas, MarketPlace, ReservaEstacionamiento, Perfil, AcercaDe, CerrarSesion;
+    Button Pagar_Cuentas, MarketPlace, ReservaEstacionamiento, MiPerfil, AcercaDe, CerrarSesion;
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
 
@@ -53,10 +53,12 @@ public class MenuUsuario extends AppCompatActivity {
         progressBarDatosU = findViewById(R.id.progressBarDatosUsuario);
 
 
-
         Usuarios = FirebaseDatabase.getInstance().getReference("Usuarios");
 
         CerrarSesion = findViewById(R.id.CerrarSesion);
+        Pagar_Cuentas = findViewById(R.id.Pagar_Cuentas);
+        MiPerfil = findViewById(R.id.MiPerfil);
+
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
 
@@ -66,6 +68,21 @@ public class MenuUsuario extends AppCompatActivity {
                 SalirAplicacionUsuario();
             }
         });
+
+        Pagar_Cuentas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuUsuario.this, Pagar_Cuentas.class));
+            }
+        });
+
+        MiPerfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuUsuario.this, PerfilUsuario.class));
+            }
+        });
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
