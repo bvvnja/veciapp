@@ -10,22 +10,26 @@ public class UserProfile {
     private String password;
     private boolean activo;
 
-    // Constructor para crear un usuario
-    public UserProfile(String uid, String nombre, String correo, String coefPropiedad, String numDepto, String password, boolean isActivo) {
+    // Constructor vacío requerido por Firebase
+    public UserProfile() {
+    }
+
+    public UserProfile(String uid,
+                       String nombre,
+                       String correo,
+                       String coefPropiedad,
+                       String numDepto,
+                       String password,
+                       boolean activo) {
         this.uid = uid;
         this.nombre = nombre;
         this.correo = correo;
         this.coefPropiedad = coefPropiedad;
         this.numDepto = numDepto;
         this.password = password;
-        this.activo = true;  // Por defecto, la cuenta está activa
+        this.activo = activo;
     }
 
-    // Constructor vacío para Firebase
-    public UserProfile() {
-    }
-
-    // Getters y setters para acceder y modificar los datos
     public String getUid() {
         return uid;
     }

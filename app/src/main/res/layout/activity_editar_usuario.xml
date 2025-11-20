@@ -1,93 +1,217 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#ffffff">
+    android:background="#F5F5F5"
+    tools:context=".EditarUsuario">
 
-    <!-- Título de la actividad -->
-    <TextView
-        android:id="@+id/tvEditUserTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Editar Usuario"
-        android:textSize="24sp"
-        android:fontFamily="@font/worksans"
-        android:textStyle="bold"
-        android:textColor="#333333"
-        android:layout_marginBottom="24dp"
-        android:layout_gravity="center"/>
-
-    <!-- Campo para el nombre -->
-    <EditText
-        android:id="@+id/edtName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nombre"
-        android:textSize="16sp"
-        android:fontFamily="@font/worksans"
-        android:layout_marginBottom="16dp"
-        android:padding="12dp"
-        android:backgroundTint="#ddd"/>
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <!-- Campo para el correo -->
-    <EditText
-        android:id="@+id/edtEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/worksans"
-        android:hint="Correo electrónico"
-        android:textSize="16sp"
-        android:layout_marginBottom="16dp"
-        android:padding="12dp"
-        android:backgroundTint="#ddd"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
 
-    <EditText
-        android:id="@+id/passwordU"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/worksans"
-        android:hint="Contraseña"
-        android:textSize="16sp"
-        android:layout_marginBottom="16dp"
-        android:padding="12dp"
-        android:backgroundTint="#ddd"/>
+        <!-- Título -->
+        <TextView
+            android:id="@+id/tvTitlePerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Editar perfil"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="#333333"
+            android:fontFamily="@font/worksans"
+            android:layout_marginTop="8dp" />
 
-    <!-- Campo para el coeficiente de propiedad -->
-    <EditText
-        android:id="@+id/edtCoefPropiedad"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/worksans"
-        android:hint="Coef. propiedad"
-        android:textSize="16sp"
-        android:layout_marginBottom="16dp"
-        android:padding="12dp"
-        android:backgroundTint="#ddd"/>
+        <!-- Subtítulo -->
+        <TextView
+            android:id="@+id/tvSubtitlePerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ve o edita tu perfil."
+            android:textSize="12sp"
+            android:gravity="center"
+            android:textColor="#888888"
+            android:fontFamily="@font/worksans"
+            android:layout_marginBottom="24dp" />
 
-    <!-- Campo para el número de departamento -->
-    <EditText
-        android:id="@+id/edtNumDepto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Número de departamento"
-        android:fontFamily="@font/worksans"
-        android:textSize="16sp"
-        android:layout_marginBottom="16dp"
-        android:padding="12dp"
-        android:backgroundTint="#ddd"/>
+        <!-- ===== NOMBRE ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
 
-    <!-- Botón para guardar los cambios -->
-    <Button
-        android:id="@+id/btnSaveChanges"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Guardar Cambios"
-        android:fontFamily="@font/worksans"
-        android:backgroundTint="#008CBA"
-        android:textColor="#ffffff"
-        android:padding="16dp"
-        android:layout_marginTop="16dp"/>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icono_nombres"
+                android:tint="#007BFF"
+                android:layout_marginEnd="8dp" />
 
-</LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombres"
+                android:textSize="13sp"
+                android:textColor="#555555"
+                android:fontFamily="@font/worksans" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nombres y Apellidos"
+                android:textSize="16sp"
+                android:fontFamily="@font/worksans"
+                android:padding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnSaveName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GUARDAR NOMBRE"
+            android:fontFamily="@font/worksans"
+            android:textAllCaps="true"
+            android:backgroundTint="#008CBA"
+            android:textColor="#FFFFFF"
+            android:padding="10dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- ===== CORREO (SOLO LECTURA) ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icono_email"
+                android:tint="#007BFF"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Correo Electrónico"
+                android:textSize="13sp"
+                android:textColor="#555555"
+                android:fontFamily="@font/worksans" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Correo Electrónico"
+                android:inputType="textEmailAddress"
+                android:textSize="16sp"
+                android:fontFamily="@font/worksans"
+                android:padding="8dp"
+                android:enabled="false"
+                android:textColor="#999999" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ===== CONTRASEÑA ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icono_password"
+                android:tint="#007BFF"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Contraseña"
+                android:textSize="13sp"
+                android:textColor="#555555"
+                android:fontFamily="@font/worksans" />
+        </LinearLayout>
+
+        <!-- Nueva contraseña -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:endIconMode="password_toggle"
+            app:passwordToggleEnabled="true"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordU"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nueva Contraseña"
+                android:inputType="textPassword"
+                android:textSize="16sp"
+                android:fontFamily="@font/worksans"
+                android:padding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Repetir contraseña -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:endIconMode="password_toggle"
+            app:passwordToggleEnabled="true"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordConfirmU"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Repite la contraseña"
+                android:inputType="textPassword"
+                android:textSize="16sp"
+                android:fontFamily="@font/worksans"
+                android:padding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnSavePassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GUARDAR CONTRASEÑA"
+            android:fontFamily="@font/worksans"
+            android:textAllCaps="true"
+            android:backgroundTint="#008CBA"
+            android:textColor="#FFFFFF"
+            android:padding="10dp"
+            android:layout_marginBottom="24dp" />
+
+    </LinearLayout>
+</ScrollView>

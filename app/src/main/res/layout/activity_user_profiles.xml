@@ -1,48 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="#ffffff"
-    android:fitsSystemWindows="true">
+    tools:context=".user_profiles">
 
-    <!-- Titulo de la sección -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <!-- Título -->
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Usuarios Registrados"
+        android:text="Mis Usuarios"
         android:textSize="26sp"
-        android:layout_marginTop="60dp"
-        android:fontFamily="@font/worksans"
-        android:textStyle="bold"
-        android:textColor="#333333"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:layout_gravity="center_horizontal"/>
+        android:gravity="center_horizontal"
+        android:textColor="#333333"
+        android:fontFamily="@font/worksans"
+        android:textStyle="bold" />
 
-
+    <!-- SearchView para buscar usuarios -->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchViewUsers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:queryHint="Buscar a un usuario"
+        android:queryHint="Buscar usuario"
         android:iconifiedByDefault="false"
-        android:background="@drawable/search_view_background"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textColor="#000000"
-        android:textColorHint="#333333"
-        android:textSize="16sp"
         android:layout_marginBottom="12dp" />
 
-
-
-
-    <!-- RecyclerView para mostrar los perfiles de usuarios -->
+    <!-- RecyclerView con la lista de usuarios -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewUsers"
         android:layout_width="match_parent"

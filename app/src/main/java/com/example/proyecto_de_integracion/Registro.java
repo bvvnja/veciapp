@@ -8,6 +8,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -33,8 +34,10 @@ import java.util.HashMap;
 
 public class Registro extends AppCompatActivity {
 
-    EditText NombreEt, CorreoEt, ContraseñaEt, ConfirmarContraseñaEt, runEt, NumeroDeptoEt, CoefcopropiedadEt, M2DptoEt;
+    EditText NombreEt, CorreoEt, ContraseñaEt, ConfirmarContraseñaEt,
+            runEt, NumeroDeptoEt, CoefcopropiedadEt, M2DptoEt;
     Button RegistrarUsuario;
+    Switch switchActivo;          // <- NUEVO
 
     FirebaseAuth firebaseAuth;
     ProgressDialog progressDialog;
@@ -42,8 +45,9 @@ public class Registro extends AppCompatActivity {
     // Referencia a "Usuarios" para validar RUT duplicado
     private DatabaseReference refUsuarios;
 
-    String nombre = " ", correo = " ", password = "", confirmarpassword = "", run = "", numerodepto = "", coefcopropiedad = "", m2depto = "";
-
+    String nombre = " ", correo = " ", password = "", confirmarpassword = "",
+            run = "", numerodepto = "", coefcopropiedad = "", m2depto = "";
+    boolean activo = true;        // <- NUEVO (por defecto activo)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +56,11 @@ public class Registro extends AppCompatActivity {
         setContentView(R.layout.activity_registro);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Registrar");
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
+        if (actionBar != null) {
+            actionBar.setTitle("Registrar");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
 
         NombreEt = findViewById(R.id.NombreEt);
         CorreoEt = findViewById(R.id.CorreoEt);
@@ -65,6 +71,7 @@ public class Registro extends AppCompatActivity {
         NumeroDeptoEt = findViewById(R.id.NumeroDeptoEt);
         CoefcopropiedadEt = findViewById(R.id.CoefcopropiedadEt);
         M2DptoEt = findViewById(R.id.M2DptoEt);
+        switchActivo = findViewById(R.id.switchActivo);   // <- NUEVO
 
         firebaseAuth = FirebaseAuth.getInstance();
         refUsuarios = FirebaseDatabase.getInstance().getReference("Usuarios");
@@ -73,12 +80,7 @@ public class Registro extends AppCompatActivity {
         progressDialog.setTitle("Espere Por favor");
         progressDialog.setCanceledOnTouchOutside(false);
 
-        RegistrarUsuario.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ValidarDatos();
-            }
-        });
+        RegistrarUsuario.setOnClickListener(view -> ValidarDatos());
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -87,7 +89,7 @@ public class Registro extends AppCompatActivity {
         });
     }
 
-    private void ValidarDatos(){
+    private void ValidarDatos() {
         nombre = NombreEt.getText().toString().trim();
         correo = CorreoEt.getText().toString().trim();
         password = ContraseñaEt.getText().toString();
@@ -96,45 +98,44 @@ public class Registro extends AppCompatActivity {
         numerodepto = NumeroDeptoEt.getText().toString().trim();
         coefcopropiedad = CoefcopropiedadEt.getText().toString().trim();
         m2depto = M2DptoEt.getText().toString().trim();
+        activo = switchActivo.isChecked();   // <- lee true/false del switch
 
-        if (TextUtils.isEmpty(nombre)){
+        if (TextUtils.isEmpty(nombre)) {
             Toast.makeText(this, "Ingrese nombre", Toast.LENGTH_SHORT).show();
-        }
-        else if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()){
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
             Toast.makeText(this, "Ingrese correo válido", Toast.LENGTH_SHORT).show();
-        }
-        else if (TextUtils.isEmpty(run)){
+        } else if (TextUtils.isEmpty(run)) {
             Toast.makeText(this, "Ingrese un RUT", Toast.LENGTH_SHORT).show();
-        }
-        else if (!esRutValido(run)){
+        } else if (!esRutValido(run)) {
             Toast.makeText(this, "Ingrese un RUT válido", Toast.LENGTH_SHORT).show();
-        }
-        else if (TextUtils.isEmpty(numerodepto)){
+        } else if (TextUtils.isEmpty(numerodepto)) {
             Toast.makeText(this, "Ingrese un Número de departamento", Toast.LENGTH_SHORT).show();
         }
         // SOLO NÚMEROS EN NÚMERO DEPTO
-        else if (!numerodepto.matches("\\d+")){
+        else if (!numerodepto.matches("\\d+")) {
             Toast.makeText(this, "El número de departamento solo debe contener dígitos", Toast.LENGTH_SHORT).show();
-        }
-        else if (TextUtils.isEmpty(coefcopropiedad)){
+        } else if (TextUtils.isEmpty(coefcopropiedad)) {
             Toast.makeText(this, "Ingrese coeficiente de copropiedad", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             // Validar coeficiente numérico y rango (0,1]
             double coef;
             try {
                 coef = Double.parseDouble(coefcopropiedad.replace(",", "."));
             } catch (NumberFormatException e) {
-                Toast.makeText(this, "El coeficiente de copropiedad debe ser numérico (use punto para decimales)", Toast.LENGTH_LONG).show();
+                Toast.makeText(this,
+                        "El coeficiente de copropiedad debe ser numérico (use punto para decimales)",
+                        Toast.LENGTH_LONG).show();
                 return;
             }
 
             if (coef <= 0 || coef > 1) {
-                Toast.makeText(this, "El coeficiente de copropiedad debe estar entre 0 y 1", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        "El coeficiente de copropiedad debe estar entre 0 y 1",
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (TextUtils.isEmpty(m2depto)){
+            if (TextUtils.isEmpty(m2depto)) {
                 Toast.makeText(this, "Ingrese metros cuadrados del departamento", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -144,31 +145,31 @@ public class Registro extends AppCompatActivity {
             try {
                 m2 = Double.parseDouble(m2depto.replace(",", "."));
             } catch (NumberFormatException e) {
-                Toast.makeText(this, "Los metros cuadrados deben ser numéricos (use punto para decimales)", Toast.LENGTH_LONG).show();
+                Toast.makeText(this,
+                        "Los metros cuadrados deben ser numéricos (use punto para decimales)",
+                        Toast.LENGTH_LONG).show();
                 return;
             }
 
             if (m2 <= 0) {
-                Toast.makeText(this, "Los metros cuadrados deben ser mayores a 0", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        "Los metros cuadrados deben ser mayores a 0",
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (TextUtils.isEmpty(password)){
+            if (TextUtils.isEmpty(password)) {
                 Toast.makeText(this, "Ingrese contraseña", Toast.LENGTH_SHORT).show();
-            }
-            else if (TextUtils.isEmpty(confirmarpassword)){
+            } else if (TextUtils.isEmpty(confirmarpassword)) {
                 Toast.makeText(this, "Confirme contraseña", Toast.LENGTH_SHORT).show();
-            }
-            else if (!password.equals(confirmarpassword)){
+            } else if (!password.equals(confirmarpassword)) {
                 Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-            }
-            else {
+            } else {
                 // Si todo es válido, seguimos con la verificación de RUT en Firebase
                 verificarRutNoDuplicado(run);
             }
         }
     }
-
 
     /**
      * Valida RUT chileno con dígito verificador.
@@ -271,7 +272,8 @@ public class Registro extends AppCompatActivity {
                                         } else {
                                             progressDialog.dismiss();
                                             Toast.makeText(Registro.this,
-                                                    "Error al enviar correo de verificación: " + task.getException().getMessage(),
+                                                    "Error al enviar correo de verificación: "
+                                                            + task.getException().getMessage(),
                                                     Toast.LENGTH_SHORT).show();
                                         }
                                     });
@@ -336,7 +338,8 @@ public class Registro extends AppCompatActivity {
         // Guardamos siempre el RUT en formato limpio
         String rutLimpio = run.toUpperCase().replace(".", "").replace("-", "");
 
-        HashMap<String, String> Datos = new HashMap<>();
+        // Cambiamos a HashMap<String, Object> para poder guardar boolean
+        HashMap<String, Object> Datos = new HashMap<>();
         Datos.put("uid", uid);
         Datos.put("correo", correo);
         Datos.put("nombres", nombre);
@@ -345,8 +348,11 @@ public class Registro extends AppCompatActivity {
         Datos.put("numerodepto", numerodepto);
         Datos.put("coefcopropiedad", coefcopropiedad);
         Datos.put("m2depto", m2depto);
+        Datos.put("activo", activo);        // <- TRUE si switch activado, FALSE si no
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Usuarios");
+        DatabaseReference databaseReference =
+                FirebaseDatabase.getInstance().getReference("Usuarios");
+
         databaseReference.child(uid)
                 .setValue(Datos)
                 .addOnSuccessListener(unused -> {

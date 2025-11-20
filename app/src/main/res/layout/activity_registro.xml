@@ -7,13 +7,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Registro">
-    
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:orientation="vertical">
-        
+
         <TextView
             android:text="@string/CrearCuentaTXT"
             android:layout_width="match_parent"
@@ -32,12 +32,12 @@
             app:lottie_autoPlay="true"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"/>
-        
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp">
-            
+
             <EditText
                 android:id="@+id/NombreEt"
                 android:hint="@string/NombreEt"
@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"/>
 
         </com.google.android.material.textfield.TextInputLayout>
-        
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -186,8 +186,19 @@
 
 
         </com.google.android.material.textfield.TextInputLayout>
-        
-        <Button
+
+
+        <Switch
+            android:id="@+id/switchActivo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cuenta activa"
+            android:fontFamily="@font/worksans"
+            android:textSize="16sp"
+            android:layout_marginTop="15dp"
+            android:checked="true" />
+
+    <Button
             android:id="@+id/RegistrarUsuario"
             android:text="@string/RegistrarUsuario"
             android:layout_marginTop="15dp"
