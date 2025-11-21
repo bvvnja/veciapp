@@ -81,15 +81,18 @@ public class user_profiles extends AppCompatActivity {
                     String nombre = snapshot.child("nombres").getValue(String.class);
                     String correo = snapshot.child("correo").getValue(String.class);
 
+                    // coefcopropiedad y numerodepto pueden venir como número, por eso usamos Object
                     Object coefObj  = snapshot.child("coefcopropiedad").getValue();
                     Object deptoObj = snapshot.child("numerodepto").getValue();
 
                     String coefPropiedad = coefObj != null ? coefObj.toString() : "";
                     String numDepto      = deptoObj != null ? deptoObj.toString() : "";
 
-                    String password = snapshot.child("password").getValue(String.class);
+                    // password también puede venir como Long, así evitamos el DatabaseException
+                    Object passObj = snapshot.child("password").getValue();
+                    String password = passObj != null ? passObj.toString() : "";
 
-                    // Leer "activo" (puede venir como boolean o como String "true"/"false")
+                    // Campo activo (boolean). Si no existe, por defecto true.
                     Object activoValue = snapshot.child("activo").getValue();
                     boolean isActive = true; // por defecto, si no hay campo, se considera activo
 
@@ -101,9 +104,9 @@ public class user_profiles extends AppCompatActivity {
                         }
                     }
 
+                    // Validar datos mínimos y excluir al admin
                     if (nombre != null &&
                             correo != null &&
-                            password != null &&
                             !correo.equalsIgnoreCase("admin@gmail.com")) {
 
                         UserProfile user = new UserProfile(

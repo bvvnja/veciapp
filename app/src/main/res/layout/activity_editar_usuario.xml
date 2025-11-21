@@ -213,5 +213,131 @@
             android:padding="10dp"
             android:layout_marginBottom="24dp" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icono_m2_depto"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="M2 Del Depto / Casa"
+                android:textSize="13sp"
+                android:textColor="#555555"
+                android:fontFamily="@font/worksans" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtM2Depto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Metros cuadrados del depto/casa"
+                android:textSize="16sp"
+                android:fontFamily="@font/worksans"
+                android:padding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icono_numero_apartamento"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Número de depto / casa"
+                android:textSize="13sp"
+                android:textColor="#555555"
+                android:fontFamily="@font/worksans" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtNumDepto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Número de depto/casa"
+                android:textSize="16sp"
+                android:fontFamily="@font/worksans"
+                android:padding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icono_coef"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Coeficiente de copropiedad"
+                android:textSize="13sp"
+                android:textColor="#555555"
+                android:fontFamily="@font/worksans" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtCoefCo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Coeficiente de copropiedad"
+                android:textSize="16sp"
+                android:fontFamily="@font/worksans"
+                android:padding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/btnSaveAll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GUARDAR CAMBIOS"
+            android:fontFamily="@font/worksans"
+            android:textAllCaps="true"
+            android:backgroundTint="#008CBA"
+            android:textColor="#FFFFFF"
+            android:padding="10dp"
+            android:layout_marginBottom="24dp" />
+
     </LinearLayout>
+
 </ScrollView>

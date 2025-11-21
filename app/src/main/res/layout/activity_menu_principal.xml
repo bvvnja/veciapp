@@ -6,6 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context=".MenuPrincipal">
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -15,7 +16,7 @@
         android:orientation="vertical"
         android:padding="5dp"
         android:layout_marginTop="?attr/actionBarSize">
-        
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="120dp"
@@ -211,11 +212,11 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="100dp"
                         android:layout_height="100dp"
-                        android:src="@drawable/acerca_de"/>
+                        android:src="@drawable/ver_gasto_comun"/>
 
                     <Button
-                        android:id="@+id/AcercaDe"
-                        android:text="@string/AcercaDe"
+                        android:id="@+id/verGasto"
+                        android:text="VER GASTOS COMUNES"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -235,11 +236,11 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="100dp"
                         android:layout_height="100dp"
-                        android:src="@drawable/cerrar_sesion"/>
+                        android:src="@drawable/acerca_de"/>
 
                     <Button
-                        android:id="@+id/CerrarSesion"
-                        android:text="@string/CerrarSesion"
+                        android:id="@+id/AcercaDe"
+                        android:text="@string/AcercaDe"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -250,12 +251,45 @@
 
 
             </androidx.appcompat.widget.LinearLayoutCompat>
+            <!-- 7 - 8 -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:weightSum="2">
+                <!--OPCION 7 -->
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical"
+                    android:gravity="center">
 
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/cerrar_sesion"/>
+
+                    <Button
+                        android:id="@+id/CerrarSesion"
+                        android:text="@string/CerrarSesion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/worksans"
+                        android:layout_marginBottom="50dp"/>
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

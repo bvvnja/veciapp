@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#ffffff"
+    tools:context=".VerGastosComunes">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/tvTitleGastos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gastos Comunes"
+        android:textSize="26sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_horizontal"
+        android:textColor="#333333"
+        android:fontFamily="@font/worksans"
+        android:textStyle="bold" />
+
+    <!-- Subtítulo -->
+    <TextView
+        android:id="@+id/tvSubtitleGastos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Revisa tu historial de boletas y obligaciones pendientes."
+        android:textSize="13sp"
+        android:gravity="center_horizontal"
+        android:textColor="#666666"
+        android:fontFamily="@font/worksans"
+        android:layout_marginBottom="16dp" />
+
+    <!-- SearchView para buscar gastos (nombre, fecha, estado) -->
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchViewGastos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="Buscar por nombre, fecha o estado"
+        android:iconifiedByDefault="false"
+        android:layout_marginBottom="12dp" />
+
+    <!-- RecyclerView con la lista de gastos comunes -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewGastos"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/item_gasto_comun" />
+
+</LinearLayout>

@@ -12,9 +12,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyecto_de_Integracion">
         <activity
+            android:name=".EditarGastoComun"
+            android:exported="false" />
+        <activity
+            android:name=".GastoMensual"
+            android:exported="false" />
+        <activity
+            android:name=".GastoComunAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".VerGastosComunes"
+            android:exported="false" />
+        <activity
+            android:name=".PerfilUsuarioAdmin"
+            android:exported="false" />
+        <activity
             android:name=".PerfilUsuario"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".EditarUsuario"
             android:exported="false"

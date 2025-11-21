@@ -32,13 +32,15 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Login extends AppCompatActivity {
 
-    EditText CorreoLogin, PassLogin;
-    Button Btn_Logeo;
+    private EditText CorreoLogin, PassLogin;
+    private Button Btn_Logeo;
 
-    ProgressDialog progressDialog;
-    FirebaseAuth firebaseAuth;
+    private ProgressDialog progressDialog;
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference usersRef;
 
-    String correo = "", password = "";
+    private String correo = "";
+    private String password = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,19 +49,25 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Login");
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
+        if (actionBar != null) {
+            actionBar.setTitle("Login");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
 
         CorreoLogin = findViewById(R.id.CorreoLogin);
-        PassLogin = findViewById(R.id.PassLogin);
-        Btn_Logeo = findViewById(R.id.Btn_Logeo);
+        PassLogin   = findViewById(R.id.PassLogin);
+        Btn_Logeo   = findViewById(R.id.Btn_Logeo);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        usersRef     = FirebaseDatabase.getInstance().getReference("Usuarios");
 
         progressDialog = new ProgressDialog(Login.this);
         progressDialog.setTitle("Espere por favor");
         progressDialog.setCanceledOnTouchOutside(false);
+
+        // Opcional, para asegurarse de no arrastrar una sesión anterior
+        firebaseAuth.signOut();
 
         Btn_Logeo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,60 +109,78 @@ public class Login extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = firebaseAuth.getCurrentUser();
 
-                            if (user != null) {
-                                user.reload().addOnCompleteListener(reloadTask -> {
-                                    String correoActual = user.getEmail();
+                            if (user == null) {
+                                Toast.makeText(Login.this,
+                                        "Error al obtener usuario autenticado.",
+                                        Toast.LENGTH_SHORT).show();
+                                return;
+                            }
 
-                                    // ✅ Si el usuario es el admin, permitir acceso aunque no esté verificado
-                                    if (correoActual != null && correoActual.equalsIgnoreCase("admin@gmail.com")) {
+                            user.reload().addOnCompleteListener(reloadTask -> {
+                                String correoActual = user.getEmail();
+
+                                // ✅ ADMIN: acceso directo a MenuPrincipal
+                                if (correoActual != null &&
+                                        correoActual.equalsIgnoreCase("admin@gmail.com")) {
+
+                                    Toast.makeText(Login.this,
+                                            "Bienvenido Administrador",
+                                            Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(Login.this, MenuPrincipal.class));
+                                    finish();
+                                    return;
+                                }
+
+                                // 🔹 Usuarios normales: revisar activo + verificación de correo
+                                DatabaseReference userRef = usersRef.child(user.getUid());
+
+                                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                        // Leer campo "activo" como Boolean (puede ser null)
+                                        Boolean isActive = dataSnapshot.child("activo").getValue(Boolean.class);
+
+                                        if (isActive == null) {
+                                            // Si nunca se guardó el campo, asumimos activo = true
+                                            isActive = true;
+                                        }
+
+                                        // Cuenta desactivada
+                                        if (!isActive) {
+                                            Toast.makeText(Login.this,
+                                                    "Cuenta desactivada. Comunícate con el administrador para activarla.",
+                                                    Toast.LENGTH_LONG).show();
+                                            firebaseAuth.signOut();
+                                            return;
+                                        }
+
+                                        // Correo no verificado
+                                        if (!user.isEmailVerified()) {
+                                            Toast.makeText(Login.this,
+                                                    "Debe verificar su correo antes de iniciar sesión.",
+                                                    Toast.LENGTH_LONG).show();
+                                            firebaseAuth.signOut();
+                                            return;
+                                        }
+
+                                        // Todo OK
                                         Toast.makeText(Login.this,
-                                                "Bienvenido Administrador",
+                                                "Bienvenido(a): " + correoActual,
                                                 Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(Login.this, MenuPrincipal.class));
+                                        startActivity(new Intent(Login.this, MenuUsuario.class));
                                         finish();
-                                        return;
                                     }
 
-                                    // ⚠️ Para los demás, verificar si la cuenta está activa
-                                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(user.getUid());
-                                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            Boolean isActive = dataSnapshot.child("activo").getValue(Boolean.class); // Usamos Boolean en lugar de boolean
-
-                                            // Si la cuenta está desactivada
-                                            if (isActive == null || !isActive) {
-                                                Toast.makeText(Login.this,
-                                                        "Cuenta desactivada. Comunícate con el administrador para activarla.",
-                                                        Toast.LENGTH_LONG).show();
-                                                firebaseAuth.signOut();  // Cerrar sesión si la cuenta está desactivada
-                                                return;
-                                            }
-
-                                            // ⚠️ Verificar que el correo esté confirmado
-                                            if (!user.isEmailVerified()) {
-                                                Toast.makeText(Login.this,
-                                                        "Debe verificar su correo antes de iniciar sesión.",
-                                                        Toast.LENGTH_LONG).show();
-                                                firebaseAuth.signOut();
-                                                return;
-                                            }
-
-                                            // 🔹 Si el correo está verificado y la cuenta está activa
-                                            Toast.makeText(Login.this,
-                                                    "Bienvenido(a): " + correoActual,
-                                                    Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(Login.this, MenuUsuario.class));
-                                            finish();
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-                                            Toast.makeText(Login.this, "Error al verificar el estado de la cuenta", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        Toast.makeText(Login.this,
+                                                "Error al verificar el estado de la cuenta",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
                                 });
-                            }
+                            });
+
                         } else {
                             Toast.makeText(Login.this,
                                     "Verifique si el correo y la contraseña son correctos.",
@@ -162,15 +188,16 @@ public class Login extends AppCompatActivity {
                         }
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
+                .addOnFailureListener(Login.this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         progressDialog.dismiss();
-                        Toast.makeText(Login.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this,
+                                "Error: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-
 
     @Override
     public boolean onSupportNavigateUp() {

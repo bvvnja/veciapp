@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,21 +24,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class PerfilUsuario extends AppCompatActivity {
+public class PerfilUsuarioAdmin extends AppCompatActivity {
 
     private EditText edtName, edtEmail;
     private TextInputEditText edtPassword, edtPasswordConfirm;
     private Button btnSaveName, btnSavePassword;
 
     private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
     private DatabaseReference usersRef;
-    private String userId;   // UID del usuario logueado
+
+    private String userId;  // UID del admin (usuario actual)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_perfil_usuario);
+        setContentView(R.layout.activity_perfil_usuario_admin);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -47,26 +50,28 @@ public class PerfilUsuario extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("Mi Perfil");
+            actionBar.setTitle("Mi perfil");
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
 
         // Firebase
         mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
         usersRef = FirebaseDatabase.getInstance().getReference("Usuarios");
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             Toast.makeText(this,
-                    "No hay usuario autenticado. Inicie sesión nuevamente.",
+                    "No hay sesión activa. Inicie sesión nuevamente.",
                     Toast.LENGTH_LONG).show();
             finish();
             return;
         }
+
+        // El admin edita SU PROPIO perfil
         userId = currentUser.getUid();
 
-        // Referencias UI  (AQUÍ estaba tu problema: faltaban los nombres de variables)
+        // Referencias UI
         edtName            = findViewById(R.id.edtName);
         edtEmail           = findViewById(R.id.edtEmail);
         edtPassword        = findViewById(R.id.passwordU);
@@ -79,52 +84,56 @@ public class PerfilUsuario extends AppCompatActivity {
         edtEmail.setFocusable(false);
         edtEmail.setClickable(false);
 
-        // Cargar datos del usuario logueado
-        loadUserData();
+        // Cargar datos del admin
+        loadAdminData();
 
         // Guardar nombre
         btnSaveName.setOnClickListener(v -> saveName());
 
-        // Guardar contraseña (Auth + BD)
+        // Guardar contraseña (BD + Auth)
         btnSavePassword.setOnClickListener(v -> savePassword());
     }
 
-    private void loadUserData() {
+    /** Carga nombre desde BD y correo desde FirebaseAuth del admin actual. */
+    private void loadAdminData() {
+        // Correo desde Auth (siempre es fiable)
+        String correoAuth = currentUser.getEmail();
+        if (correoAuth != null) {
+            edtEmail.setText(correoAuth);
+        }
+
+        // Nombre desde la Realtime Database
         usersRef.child(userId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (!snapshot.exists()) {
-                            Toast.makeText(PerfilUsuario.this,
-                                    "No se encontraron datos del usuario",
+                            // Si no está en BD, no cerramos la pantalla; solo avisamos
+                            Toast.makeText(PerfilUsuarioAdmin.this,
+                                    "No se encontró el perfil en la base de datos",
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
 
                         String nombre = snapshot.child("nombres").getValue(String.class);
-                        String correo = snapshot.child("correo").getValue(String.class);
-
                         if (nombre != null) {
                             edtName.setText(nombre);
                         }
-                        if (correo != null) {
-                            edtEmail.setText(correo);
-                        }
-
-                        // Por seguridad NO precargamos la contraseña
+                        // No leemos ni mostramos la contraseña por seguridad
                         edtPassword.setText("");
                         edtPasswordConfirm.setText("");
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(PerfilUsuario.this,
+                        Toast.makeText(PerfilUsuarioAdmin.this,
                                 "Error al cargar los datos",
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    /** Actualiza el nombre del admin en la BD. */
     private void saveName() {
         String newName = edtName.getText() != null
                 ? edtName.getText().toString().trim()
@@ -141,22 +150,29 @@ public class PerfilUsuario extends AppCompatActivity {
                 .setValue(newName)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(PerfilUsuario.this,
+                        Toast.makeText(PerfilUsuarioAdmin.this,
                                 "Nombre actualizado correctamente",
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(PerfilUsuario.this,
+                        Toast.makeText(PerfilUsuarioAdmin.this,
                                 "Error al actualizar el nombre",
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    /**
+     * Actualiza la contraseña del admin:
+     * 1) en Firebase Auth (currentUser.updatePassword)
+     * 2) en Realtime Database (Usuarios/{uid}/password)
+     */
     private void savePassword() {
-        String newPassword =
-                edtPassword.getText() != null ? edtPassword.getText().toString() : "";
-        String confirmPassword =
-                edtPasswordConfirm.getText() != null ? edtPasswordConfirm.getText().toString() : "";
+        String newPassword = edtPassword.getText() != null
+                ? edtPassword.getText().toString()
+                : "";
+        String confirmPassword = edtPasswordConfirm.getText() != null
+                ? edtPasswordConfirm.getText().toString()
+                : "";
 
         if (TextUtils.isEmpty(newPassword) || TextUtils.isEmpty(confirmPassword)) {
             Toast.makeText(this,
@@ -179,36 +195,39 @@ public class PerfilUsuario extends AppCompatActivity {
             return;
         }
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            Toast.makeText(this,
-                    "No hay usuario autenticado. Inicie sesión nuevamente.",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // 1) Actualizar en Firebase Authentication
+        // 1) Actualizar en Firebase Auth
         currentUser.updatePassword(newPassword)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // 2) Actualizar también en Realtime Database
+                        // 2) Si Auth ok, actualizar en Realtime Database
                         usersRef.child(userId).child("password")
                                 .setValue(newPassword)
                                 .addOnCompleteListener(t2 -> {
                                     if (t2.isSuccessful()) {
-                                        Toast.makeText(PerfilUsuario.this,
+                                        Toast.makeText(PerfilUsuarioAdmin.this,
                                                 "Contraseña actualizada correctamente",
-                                                Toast.LENGTH_SHORT).show();
+                                                Toast.LENGTH_LONG).show();
+
+                                        // Opcional: limpiar campos
+                                        edtPassword.setText("");
+                                        edtPasswordConfirm.setText("");
                                     } else {
-                                        Toast.makeText(PerfilUsuario.this,
-                                                "Error al guardar la contraseña en la base de datos",
-                                                Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(PerfilUsuarioAdmin.this,
+                                                "Contraseña cambiada en Auth, pero hubo un error al guardar en la BD",
+                                                Toast.LENGTH_LONG).show();
                                     }
                                 });
                     } else {
-                        Toast.makeText(PerfilUsuario.this,
-                                "Error al actualizar la contraseña en Firebase Auth",
-                                Toast.LENGTH_SHORT).show();
+                        Exception e = task.getException();
+                        if (e instanceof FirebaseAuthRecentLoginRequiredException) {
+                            Toast.makeText(PerfilUsuarioAdmin.this,
+                                    "Por seguridad, inicia sesión nuevamente y luego cambia la contraseña.",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(PerfilUsuarioAdmin.this,
+                                    "Error al actualizar la contraseña en Firebase Auth",
+                                    Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
     }
