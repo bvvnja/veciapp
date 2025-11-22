@@ -1,7 +1,9 @@
 package com.example.proyecto_de_integracion;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,6 +31,8 @@ public class Pagar_Cuentas extends AppCompatActivity {
     private DatabaseReference cobranzasUsuarioRef;
     private String uidUsuario;
 
+    private Button btnGestionarTarjeta; // botón que te llevará a la pantalla de tarjeta
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +49,30 @@ public class Pagar_Cuentas extends AppCompatActivity {
         recyclerCobranzas = findViewById(R.id.recyclerCobranzas);
         recyclerCobranzas.setLayoutManager(new LinearLayoutManager(this));
         cobranzaList = new ArrayList<>();
-        cobranzaAdapter = new CobranzaAdapter(cobranzaList);
-        recyclerCobranzas.setAdapter(cobranzaAdapter);
+
+        // Botón para ir a la interfaz de la tarjeta
+        btnGestionarTarjeta = findViewById(R.id.btnGestionarTarjeta);
+        btnGestionarTarjeta.setOnClickListener(v -> {
+            if (cobranzaList.isEmpty()) {
+                Toast.makeText(Pagar_Cuentas.this,
+                        "No hay cobranzas para pagar",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Por simplicidad, tomo la primera cobranza de la lista.
+            // Si después quieres seleccionar una específica, lo movemos al adapter.
+            Cobranza c = cobranzaList.get(0);
+
+            Intent intent = new Intent(Pagar_Cuentas.this, PagoTarjetaActivity.class);
+            intent.putExtra("uidUsuario", uidUsuario);
+            intent.putExtra("mesClave", c.getMesClave());
+            intent.putExtra("mesNombre", c.getMesNombre());
+            intent.putExtra("anio", c.getAnio());
+            intent.putExtra("monto", c.getMonto());
+            intent.putExtra("descripcion", c.getDescripcion());
+            startActivity(intent);
+        });
 
         // UID del usuario autenticado
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -57,6 +83,7 @@ public class Pagar_Cuentas extends AppCompatActivity {
         } else {
             Log.e("Pagar_Cuentas", "Usuario no autenticado");
             Toast.makeText(this, "Usuario no autenticado", Toast.LENGTH_SHORT).show();
+            finish();
             return;
         }
 
@@ -67,6 +94,14 @@ public class Pagar_Cuentas extends AppCompatActivity {
 
         Log.d("Pagar_Cuentas", "Leyendo desde ruta: " + cobranzasUsuarioRef.getPath().toString());
 
+        // IMPORTANTE: pasar uidUsuario al adapter
+        cobranzaAdapter = new CobranzaAdapter(this, cobranzaList, uidUsuario);
+        recyclerCobranzas.setAdapter(cobranzaAdapter);
+
+        cargarCobranzas();
+    }
+
+    private void cargarCobranzas() {
         cobranzasUsuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -86,6 +121,8 @@ public class Pagar_Cuentas extends AppCompatActivity {
                 for (DataSnapshot mesSnapshot : snapshot.getChildren()) {
                     Cobranza c = mesSnapshot.getValue(Cobranza.class);
                     if (c != null) {
+                        // Guardamos la clave del nodo (ej: "2025-09") para poder actualizar luego
+                        c.setMesClave(mesSnapshot.getKey());
                         Log.d("Pagar_Cuentas",
                                 "Cobranza añadida. mes=" + mesSnapshot.getKey()
                                         + " nombres=" + c.getNombres()
@@ -108,6 +145,13 @@ public class Pagar_Cuentas extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Al volver desde PagoTarjetaActivity, recarga para ver el estado actualizado
+        cargarCobranzas();
     }
 
     @Override

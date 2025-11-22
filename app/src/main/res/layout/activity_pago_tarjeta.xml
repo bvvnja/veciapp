@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Resumen del pago -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:padding="12dp"
+            android:layout_marginTop="40dp"
+            android:elevation="2dp"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:id="@+id/txtTituloResumen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Resumen del pago"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/txtResumenMes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mes: -"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:id="@+id/txtResumenDepto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Depto: -"/>
+
+            <TextView
+                android:id="@+id/txtResumenMonto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Monto: $0"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+
+        <!-- Tarjeta guardada -->
+        <LinearLayout
+            android:id="@+id/layoutTarjetaGuardada"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:padding="12dp"
+            android:elevation="2dp"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txtTarjetaGuardada"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tarjeta guardada: **** 1234 (MM/AA)"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnPagarTarjetaGuardada"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pagar con esta tarjeta"
+                android:textAllCaps="false"
+                android:layout_marginTop="8dp" />
+
+            <Button
+                android:id="@+id/btnEliminarTarjeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Eliminar tarjeta"
+                android:textAllCaps="false"
+                android:layout_marginTop="6dp"
+                android:textColor="#D32F2F" />
+        </LinearLayout>
+
+        <!-- Formulario nueva tarjeta -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:padding="12dp"
+            android:elevation="2dp">
+
+            <TextView
+                android:id="@+id/txtTituloTarjeta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Agregar / actualizar tarjeta"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/etNumeroTarjeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Número de tarjeta (16 dígitos)"
+                android:inputType="number"
+                android:maxLength="16"
+                android:layout_marginTop="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <EditText
+                    android:id="@+id/etVencimiento"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Vencimiento (MM/AA)"
+                    android:inputType="text" />
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="match_parent" />
+
+                <EditText
+                    android:id="@+id/etCvc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="CVC"
+                    android:inputType="numberPassword"
+                    android:maxLength="3" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnGuardarTarjeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Guardar tarjeta"
+                android:textAllCaps="false"
+                android:layout_marginTop="12dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
