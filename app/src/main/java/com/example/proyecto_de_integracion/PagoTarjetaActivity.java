@@ -1,11 +1,15 @@
 package com.example.proyecto_de_integracion;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,14 +22,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 public class PagoTarjetaActivity extends AppCompatActivity {
 
     // Resumen
     private TextView txtResumenMes, txtResumenDepto, txtResumenMonto;
 
-    // Tarjeta guardada
+    // Tarjetas guardadas
     private LinearLayout layoutTarjetaGuardada;
-    private TextView txtTarjetaGuardada;
+    private RadioGroup rgTarjetas;
     private Button btnPagarTarjetaGuardada;
     private Button btnEliminarTarjeta;
 
@@ -42,8 +50,13 @@ public class PagoTarjetaActivity extends AppCompatActivity {
     private String descripcion;
     private String numeroDepto;
 
+    // Firebase
     private DatabaseReference cobranzaRef;
-    private DatabaseReference tarjetaRef;
+    private DatabaseReference tarjetasUsuarioRef;
+
+    // Lista de tarjetas del usuario (máx 3)
+    private final List<Tarjeta> tarjetasGuardadas = new ArrayList<>();
+    private final List<String> tarjetasKeys = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +75,9 @@ public class PagoTarjetaActivity extends AppCompatActivity {
         txtResumenDepto = findViewById(R.id.txtResumenDepto);
         txtResumenMonto = findViewById(R.id.txtResumenMonto);
 
-        // Tarjeta guardada
+        // Tarjetas guardadas
         layoutTarjetaGuardada = findViewById(R.id.layoutTarjetaGuardada);
-        txtTarjetaGuardada = findViewById(R.id.txtTarjetaGuardada);
+        rgTarjetas = findViewById(R.id.rgTarjetas);
         btnPagarTarjetaGuardada = findViewById(R.id.btnPagarTarjetaGuardada);
         btnEliminarTarjeta = findViewById(R.id.btnEliminarTarjeta);
 
@@ -73,6 +86,12 @@ public class PagoTarjetaActivity extends AppCompatActivity {
         etVencimiento = findViewById(R.id.etVencimiento);
         etCvc = findViewById(R.id.etCvc);
         btnGuardarTarjeta = findViewById(R.id.btnGuardarTarjeta);
+
+        // Formato número: 1234 5678 9012 3456
+        configurarTextWatcherNumeroTarjeta();
+
+        // Formato vencimiento: MM/AA con "/" automático
+        configurarTextWatcherVencimiento();
 
         // Datos recibidos desde CobranzaAdapter
         uidUsuario = getIntent().getStringExtra("uidUsuario");
@@ -93,40 +112,136 @@ public class PagoTarjetaActivity extends AppCompatActivity {
                 .child(uidUsuario)
                 .child(mesClave);
 
-        tarjetaRef = FirebaseDatabase.getInstance()
+        tarjetasUsuarioRef = FirebaseDatabase.getInstance()
                 .getReference("Tarjetas")
-                .child(uidUsuario)
-                .child("default");
+                .child(uidUsuario);
 
-        // Cargar tarjeta guardada si existe
-        cargarTarjetaGuardada();
+        // Cargar tarjetas guardadas
+        cargarTarjetasGuardadas();
 
-        // Guardar/actualizar tarjeta
+        // Guardar/actualizar
         btnGuardarTarjeta.setOnClickListener(v -> guardarTarjeta());
 
-        // Pagar con tarjeta guardada
-        btnPagarTarjetaGuardada.setOnClickListener(v -> realizarPagoConTarjetaGuardada());
+        // Pagar con tarjeta seleccionada
+        btnPagarTarjetaGuardada.setOnClickListener(v -> realizarPagoConTarjetaSeleccionada());
 
-        // Eliminar tarjeta
-        btnEliminarTarjeta.setOnClickListener(v -> eliminarTarjeta());
+        // Eliminar tarjeta seleccionada
+        btnEliminarTarjeta.setOnClickListener(v -> eliminarTarjetaSeleccionada());
     }
 
-    private void cargarTarjetaGuardada() {
-        tarjetaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    // --------------------- TEXT WATCHERS -----------------------------
+
+    private void configurarTextWatcherNumeroTarjeta() {
+        etNumeroTarjeta.addTextChangedListener(new TextWatcher() {
+            private boolean isFormatting;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (isFormatting) return;
+                isFormatting = true;
+
+                String digits = s.toString().replace(" ", "");
+                if (digits.length() > 16) {
+                    digits = digits.substring(0, 16);
+                }
+
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < digits.length(); i++) {
+                    sb.append(digits.charAt(i));
+                    if ((i + 1) % 4 == 0 && (i + 1) < digits.length()) {
+                        sb.append(" ");
+                    }
+                }
+
+                etNumeroTarjeta.removeTextChangedListener(this);
+                etNumeroTarjeta.setText(sb.toString());
+                etNumeroTarjeta.setSelection(etNumeroTarjeta.getText().length());
+                etNumeroTarjeta.addTextChangedListener(this);
+
+                isFormatting = false;
+
+                // Actualizar texto del botón Guardar/Actualizar
+                actualizarTextoBotonGuardar(digits);
+            }
+        });
+    }
+
+    private void configurarTextWatcherVencimiento() {
+        etVencimiento.addTextChangedListener(new TextWatcher() {
+            private boolean isDeleting = false;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                isDeleting = count > after;
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!isDeleting && s.length() == 2) {
+                    if (!s.toString().contains("/")) {
+                        s.append("/");
+                    }
+                }
+            }
+        });
+    }
+
+    // --------------------- CARGA TARJETAS -----------------------------
+
+    private void cargarTarjetasGuardadas() {
+        tarjetasUsuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                tarjetasGuardadas.clear();
+                tarjetasKeys.clear();
+                rgTarjetas.removeAllViews();
+
                 if (snapshot.exists()) {
-                    Tarjeta tarjeta = snapshot.getValue(Tarjeta.class);
-                    if (tarjeta != null && tarjeta.getLast4() != null) {
-                        layoutTarjetaGuardada.setVisibility(View.VISIBLE);
-                        String texto = "Tarjeta guardada: **** " + tarjeta.getLast4()
-                                + " (" + (tarjeta.getVencimiento() != null ? tarjeta.getVencimiento() : "") + ")";
-                        txtTarjetaGuardada.setText(texto);
-                    } else {
-                        layoutTarjetaGuardada.setVisibility(View.GONE);
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        Tarjeta t = ds.getValue(Tarjeta.class);
+                        if (t != null && t.getNumeroCompleto() != null) {
+                            tarjetasGuardadas.add(t);
+                            tarjetasKeys.add(ds.getKey());
+                        }
+                    }
+                }
+
+                if (!tarjetasGuardadas.isEmpty()) {
+                    layoutTarjetaGuardada.setVisibility(View.VISIBLE);
+
+                    for (int i = 0; i < tarjetasGuardadas.size(); i++) {
+                        Tarjeta t = tarjetasGuardadas.get(i);
+                        String last4 = t.getLast4() != null ? t.getLast4() : "****";
+                        String venc = t.getVencimiento() != null ? t.getVencimiento() : "";
+
+                        RadioButton rb = new RadioButton(PagoTarjetaActivity.this);
+                        rb.setText("**** " + last4 + " (" + venc + ")");
+                        rb.setTag(i); // guardamos el índice
+                        rgTarjetas.addView(rb);
+
+                        if (i == 0) {
+                            rgTarjetas.check(rb.getId());
+                        }
                     }
                 } else {
                     layoutTarjetaGuardada.setVisibility(View.GONE);
+                }
+
+                // Ajustar texto de botón Guardar/Actualizar según lo que haya escrito
+                String numeroPlano = etNumeroTarjeta.getText().toString().replace(" ", "");
+                if (numeroPlano.length() == 16) {
+                    actualizarTextoBotonGuardar(numeroPlano);
+                } else {
+                    btnGuardarTarjeta.setText("Guardar tarjeta");
                 }
             }
 
@@ -137,12 +252,17 @@ public class PagoTarjetaActivity extends AppCompatActivity {
         });
     }
 
+    // --------------------- VALIDACIONES -----------------------------
+
     private boolean validarCamposNuevaTarjeta() {
-        String numero = etNumeroTarjeta.getText().toString().replace(" ", "");
+        String numeroConEspacios = etNumeroTarjeta.getText().toString();
+        String numeroPlano = numeroConEspacios.replace(" ", "");
         String venc = etVencimiento.getText().toString();
         String cvc = etCvc.getText().toString();
 
-        if (TextUtils.isEmpty(numero) || numero.length() != 16 || !numero.matches("\\d{16}")) {
+        if (TextUtils.isEmpty(numeroPlano) ||
+                numeroPlano.length() != 16 ||
+                !numeroPlano.matches("\\d{16}")) {
             etNumeroTarjeta.setError("Debe tener 16 dígitos");
             return false;
         }
@@ -157,32 +277,131 @@ public class PagoTarjetaActivity extends AppCompatActivity {
             return false;
         }
 
+        // No vencida: mes/año tarjeta >= mes/año actual
+        String[] parts = venc.split("/");
+        int mes = Integer.parseInt(parts[0]);
+        int anioTarjeta = 2000 + Integer.parseInt(parts[1]);
+
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+        int currentMonth = cal.get(Calendar.MONTH) + 1;
+
+        if (anioTarjeta < currentYear ||
+                (anioTarjeta == currentYear && mes < currentMonth)) {
+            etVencimiento.setError("Tarjeta vencida");
+            return false;
+        }
+
         return true;
     }
+
+    private void actualizarTextoBotonGuardar(String numeroPlano) {
+        if (numeroPlano == null || numeroPlano.length() != 16) {
+            btnGuardarTarjeta.setText("Guardar tarjeta");
+            return;
+        }
+        if (existeTarjeta(numeroPlano)) {
+            btnGuardarTarjeta.setText("Actualizar tarjeta");
+        } else {
+            btnGuardarTarjeta.setText("Guardar tarjeta");
+        }
+    }
+
+    private boolean existeTarjeta(String numeroPlano) {
+        for (Tarjeta t : tarjetasGuardadas) {
+            if (numeroPlano.equals(t.getNumeroCompleto())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String obtenerKeyTarjetaPorNumero(String numeroPlano) {
+        for (int i = 0; i < tarjetasGuardadas.size(); i++) {
+            Tarjeta t = tarjetasGuardadas.get(i);
+            if (numeroPlano.equals(t.getNumeroCompleto())) {
+                return tarjetasKeys.get(i);
+            }
+        }
+        return null;
+    }
+
+    // --------------------- GUARDAR / ACTUALIZAR -----------------------------
 
     private void guardarTarjeta() {
         if (!validarCamposNuevaTarjeta()) return;
 
-        String numero = etNumeroTarjeta.getText().toString().replace(" ", "");
+        String numeroPlano = etNumeroTarjeta.getText().toString().replace(" ", "");
         String venc = etVencimiento.getText().toString();
-        String last4 = numero.substring(12); // últimos 4 dígitos
+        String last4 = numeroPlano.substring(12);
 
-        Tarjeta tarjeta = new Tarjeta(last4, venc, null);
+        String keyExistente = obtenerKeyTarjetaPorNumero(numeroPlano);
 
-        tarjetaRef.setValue(tarjeta)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(PagoTarjetaActivity.this,
-                                "Tarjeta guardada correctamente", Toast.LENGTH_LONG).show();
-                        cargarTarjetaGuardada();
-                    } else {
-                        Toast.makeText(PagoTarjetaActivity.this,
-                                "Error al guardar tarjeta", Toast.LENGTH_LONG).show();
-                    }
-                });
+        if (keyExistente != null) {
+            // Actualizar tarjeta existente
+            Tarjeta tarjetaActualizada = new Tarjeta(numeroPlano, last4, venc, null);
+            tarjetasUsuarioRef.child(keyExistente).setValue(tarjetaActualizada)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(PagoTarjetaActivity.this,
+                                    "Tarjeta actualizada", Toast.LENGTH_LONG).show();
+                            cargarTarjetasGuardadas();
+                        } else {
+                            Toast.makeText(PagoTarjetaActivity.this,
+                                    "Error al actualizar tarjeta", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        } else {
+            // Nueva tarjeta
+            if (tarjetasGuardadas.size() >= 3) {
+                Toast.makeText(this,
+                        "Ya tienes 3 tarjetas guardadas. Elimina una para agregar otra.",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Tarjeta nuevaTarjeta = new Tarjeta(numeroPlano, last4, venc, null);
+            tarjetasUsuarioRef.push().setValue(nuevaTarjeta)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(PagoTarjetaActivity.this,
+                                    "Tarjeta guardada correctamente", Toast.LENGTH_LONG).show();
+                            cargarTarjetasGuardadas();
+                        } else {
+                            Toast.makeText(PagoTarjetaActivity.this,
+                                    "Error al guardar tarjeta", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
     }
 
-    private void realizarPagoConTarjetaGuardada() {
+    // --------------------- PAGAR / ELIMINAR SEGÚN SELECCIÓN -----------------------------
+
+    private int obtenerIndiceTarjetaSeleccionada() {
+        int checkedId = rgTarjetas.getCheckedRadioButtonId();
+        if (checkedId == -1) {
+            return -1;
+        }
+        RadioButton rb = findViewById(checkedId);
+        if (rb == null || rb.getTag() == null) {
+            return -1;
+        }
+        return (int) rb.getTag();
+    }
+
+    private void realizarPagoConTarjetaSeleccionada() {
+        if (tarjetasGuardadas.isEmpty()) {
+            Toast.makeText(this, "No hay tarjetas guardadas", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        int index = obtenerIndiceTarjetaSeleccionada();
+        if (index < 0 || index >= tarjetasGuardadas.size()) {
+            Toast.makeText(this, "Seleccione una tarjeta para pagar", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Aquí podrías usar tarjetasGuardadas.get(index) si quieres guardar last4 en el comprobante
         cobranzaRef.child("estadoPago").setValue("Pagado")
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -196,19 +415,34 @@ public class PagoTarjetaActivity extends AppCompatActivity {
                 });
     }
 
-    private void eliminarTarjeta() {
-        tarjetaRef.removeValue()
+    private void eliminarTarjetaSeleccionada() {
+        if (tarjetasGuardadas.isEmpty()) {
+            Toast.makeText(this, "No hay tarjetas guardadas para eliminar", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        int index = obtenerIndiceTarjetaSeleccionada();
+        if (index < 0 || index >= tarjetasGuardadas.size()) {
+            Toast.makeText(this, "Seleccione una tarjeta para eliminar", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String key = tarjetasKeys.get(index);
+
+        tarjetasUsuarioRef.child(key).removeValue()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(PagoTarjetaActivity.this,
                                 "Tarjeta eliminada", Toast.LENGTH_LONG).show();
-                        layoutTarjetaGuardada.setVisibility(View.GONE);
+                        cargarTarjetasGuardadas();
                     } else {
                         Toast.makeText(PagoTarjetaActivity.this,
                                 "Error al eliminar tarjeta", Toast.LENGTH_LONG).show();
                     }
                 });
     }
+
+    // --------------------- NAV ATRÁS -----------------------------
 
     @Override
     public boolean onSupportNavigateUp() {

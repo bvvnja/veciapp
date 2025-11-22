@@ -17,8 +17,8 @@
             android:orientation="vertical"
             android:background="@android:color/white"
             android:padding="12dp"
-            android:layout_marginTop="40dp"
             android:elevation="2dp"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="12dp">
 
             <TextView
@@ -51,7 +51,7 @@
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
 
-        <!-- Tarjeta guardada -->
+        <!-- Tarjetas guardadas -->
         <LinearLayout
             android:id="@+id/layoutTarjetaGuardada"
             android:layout_width="match_parent"
@@ -64,17 +64,25 @@
             android:visibility="gone">
 
             <TextView
-                android:id="@+id/txtTarjetaGuardada"
+                android:id="@+id/txtTituloTarjetas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tarjeta guardada: **** 1234 (MM/AA)"
-                android:textSize="14sp" />
+                android:text="Tarjetas guardadas"
+                android:textStyle="bold"
+                android:textSize="15sp" />
+
+            <RadioGroup
+                android:id="@+id/rgTarjetas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp" />
 
             <Button
                 android:id="@+id/btnPagarTarjetaGuardada"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pagar con esta tarjeta"
+                android:text="Pagar con tarjeta seleccionada"
                 android:textAllCaps="false"
                 android:layout_marginTop="8dp" />
 
@@ -82,7 +90,7 @@
                 android:id="@+id/btnEliminarTarjeta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Eliminar tarjeta"
+                android:text="Eliminar tarjeta seleccionada"
                 android:textAllCaps="false"
                 android:layout_marginTop="6dp"
                 android:textColor="#D32F2F" />
@@ -111,7 +119,6 @@
                 android:layout_height="wrap_content"
                 android:hint="Número de tarjeta (16 dígitos)"
                 android:inputType="number"
-                android:maxLength="16"
                 android:layout_marginTop="8dp" />
 
             <LinearLayout

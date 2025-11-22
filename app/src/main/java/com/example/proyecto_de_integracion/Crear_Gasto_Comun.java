@@ -83,11 +83,12 @@ public class Crear_Gasto_Comun extends AppCompatActivity {
 
     private void configurarSpinnerMeses() {
         String[] meses = {
-                "Seleccionar mes",    // <- aquí pones la frase que tú quieras
+                "Seleccionar mes",    // posición 0
                 "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         };
-        ArrayAdapter<String> adapterMeses = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, meses);
+        ArrayAdapter<String> adapterMeses =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, meses);
         adapterMeses.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMes.setAdapter(adapterMeses);
     }
@@ -98,8 +99,12 @@ public class Crear_Gasto_Comun extends AppCompatActivity {
             Toast.makeText(this, "Seleccione un mes", Toast.LENGTH_SHORT).show();
             return;
         }
+
         String mesNombre = spinnerMes.getSelectedItem().toString();
-        int mesIndex = spinnerMes.getSelectedItemPosition() + 1; // 1-12
+
+        // POSICIÓN CORRECTA: 1..12 (porque 0 = "Seleccionar mes")
+        int mesIndex = spinnerMes.getSelectedItemPosition(); // <-- antes tenía +1, aquí estaba el error
+
         String anioStr = EtAnio.getText().toString().trim();
         String totalStr = EtTotalGastosEdificio.getText().toString().trim();
         String descripcion = EtDescripcion.getText().toString().trim();
@@ -140,7 +145,7 @@ public class Crear_Gasto_Comun extends AppCompatActivity {
             return;
         }
 
-        // Clave del mes: AAAA-MM (ej: 2025-03)
+        // Clave del mes: AAAA-MM (ej: 2025-04 para Abril)
         String mesFormateado = (mesIndex < 10 ? "0" + mesIndex : String.valueOf(mesIndex));
         String claveMes = anio + "-" + mesFormateado;
 
@@ -189,26 +194,24 @@ public class Crear_Gasto_Comun extends AppCompatActivity {
 
                     double coef = 0;
                     try {
-                        coef = Double.parseDouble(coefStr.replace(",", ".")); // Convertir a Double
+                        coef = Double.parseDouble(coefStr.replace(",", "."));
                     } catch (NumberFormatException e) {
-                        // coeficiente malo, lo saltamos
                         continue;
                     }
 
                     if (coef <= 0 || coef > 1) {
-                        // coeficiente fuera de rango, lo saltamos
                         continue;
                     }
 
                     double montoUsuario = totalEdificio * coef;
 
-                    // Nodo: Cobranzas/AAAA-MM/uid
+                    // Nodo: Cobranzas/uid/AAAA-MM
                     DatabaseReference refCobroUsuario = refCobranzas
                             .child(uid)
                             .child(claveMes);
 
                     HashMap<String, Object> datosCobro = new HashMap<>();
-                    datosCobro.put("uidUsuario", uid);  // Establecer el uidUsuario
+                    datosCobro.put("uidUsuario", uid);
                     datosCobro.put("nombres", nombres);
                     datosCobro.put("numeroDepto", numerodepto);
                     datosCobro.put("mesClave", claveMes);
@@ -241,7 +244,6 @@ public class Crear_Gasto_Comun extends AppCompatActivity {
             }
         });
     }
-
 
     @Override
     public boolean onSupportNavigateUp() {

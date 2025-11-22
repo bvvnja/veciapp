@@ -1,18 +1,30 @@
 package com.example.proyecto_de_integracion;
 
 public class Tarjeta {
+
+    // 16 dígitos sin espacios (solo para tu app)
+    private String numeroCompleto;
     private String last4;
     private String vencimiento; // MM/AA
-    private String titular;     // opcional, por si quieres usarlo después
+    private String titular;     // opcional
 
     public Tarjeta() {
-        // Constructor vacío necesario para Firebase
+        // Necesario para Firebase
     }
 
-    public Tarjeta(String last4, String vencimiento, String titular) {
+    public Tarjeta(String numeroCompleto, String last4, String vencimiento, String titular) {
+        this.numeroCompleto = numeroCompleto;
         this.last4 = last4;
         this.vencimiento = vencimiento;
         this.titular = titular;
+    }
+
+    public String getNumeroCompleto() {
+        return numeroCompleto;
+    }
+
+    public void setNumeroCompleto(String numeroCompleto) {
+        this.numeroCompleto = numeroCompleto;
     }
 
     public String getLast4() {
