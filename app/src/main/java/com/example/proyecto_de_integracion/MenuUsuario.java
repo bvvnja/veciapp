@@ -58,7 +58,8 @@ public class MenuUsuario extends AppCompatActivity {
         CerrarSesion = findViewById(R.id.CerrarSesion);
         Pagar_Cuentas = findViewById(R.id.Pagar_Cuentas);
         MiPerfil = findViewById(R.id.MiPerfil);
-
+        MarketPlace = findViewById(R.id.Marketplace);
+        AcercaDe = findViewById(R.id.AcercaDe);
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
 
@@ -80,6 +81,20 @@ public class MenuUsuario extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MenuUsuario.this, PerfilUsuario.class));
+            }
+        });
+
+        MarketPlace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuUsuario.this, MarketplaceActivity.class));
+            }
+        });
+
+        AcercaDe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MenuUsuario.this, AcercaDeActivity.class));
             }
         });
 

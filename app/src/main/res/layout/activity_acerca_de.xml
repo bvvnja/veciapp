@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_detalle_publicacion"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Título principal -->
+        <TextView
+            android:id="@+id/txtTituloAcerca"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Acerca de VeciApp"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:paddingBottom="8dp" />
+
+        <!-- Introducción -->
+        <TextView
+            android:id="@+id/txtIntroAcerca"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="VeciApp es una aplicación pensada para comunidades residenciales chilenas (edificios, condominios y barrios cerrados). Su objetivo es modernizar la gestión de la comunidad, mejorar la comunicación entre vecinos y facilitar la administración de servicios internos."
+            android:textSize="15sp"
+            android:paddingBottom="12dp" />
+
+        <!-- Sección: Qué es VeciApp -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="¿Qué es VeciApp?"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:paddingBottom="4dp" />
+
+        <TextView
+            android:id="@+id/txtQueEs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Es una plataforma que integra en una sola app móvil la gestión de gastos comunes, un marketplace interno y herramientas de administración para la comunidad. Todo se gestiona en línea, con información disponible en tiempo real para residentes y administradores."
+            android:textSize="15sp"
+            android:paddingBottom="12dp" />
+
+        <!-- Sección: Funcionalidades principales -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Funcionalidades principales"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp" />
+
+        <TextView
+            android:id="@+id/txtFunciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="• Gestión de gastos comunes: registro de gastos mensuales, cálculo automático por coeficiente de copropiedad y visualización del detalle de la boleta desde la app.\n\n• Marketplace vecinal: publicación de productos y servicios, con título, descripción, precio, fotos y categoría. Cada aviso cuenta con un sistema de chat 1 a 1 entre vendedor y comprador.\n\n• Gestión de usuarios: registro de residentes, asociación a departamento, control de estado activo/inactivo y administración de información de contacto.\n\n• Comunicación: notificaciones en tiempo real para informar cambios de estado, nuevos mensajes de chat y actualizaciones relevantes para la comunidad.\n\n• Administración centralizada: el administrador puede crear, editar, desactivar o eliminar publicaciones y generar los gastos comunes para cada departamento."
+            android:textSize="15sp"
+            android:paddingBottom="12dp" />
+
+        <!-- Sección: Beneficios -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Beneficios para la comunidad"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp" />
+
+        <TextView
+            android:id="@+id/txtBeneficios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="• Transparencia en la información de gastos y cobros.\n• Comunicación más ordenada que los grupos informales.\n• Espacio seguro para comprar y vender dentro de la comunidad.\n• Ahorro de tiempo para residentes y administración.\n• Base para seguir incorporando nuevas funcionalidades (reservas de espacios comunes, gestión de visitas, etc.)."
+            android:textSize="15sp"
+            android:paddingBottom="12dp" />
+
+        <!-- Sección: Tecnologías -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tecnologías utilizadas"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp" />
+
+        <TextView
+            android:id="@+id/txtTecnologias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="VeciApp está desarrollada en Android Studio utilizando Java y se apoya en Firebase para autenticación de usuarios, base de datos en tiempo real, almacenamiento de imágenes y envío de notificaciones. Esto permite que la información se sincronice al instante entre todos los dispositivos y que la aplicación sea fácil de escalar y mantener."
+            android:textSize="15sp"
+            android:paddingBottom="16dp" />
+
+        <!-- Pie de página -->
+        <TextView
+            android:id="@+id/txtPieAcerca"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="VeciApp busca convertirse en el punto de encuentro digital de la comunidad, facilitando la vida diaria de vecinos y administradores."
+            android:textSize="14sp"
+            android:textStyle="italic"
+            android:paddingBottom="24dp" />
+
+        <!-- BOTÓN SOLO PARA ADMIN: GENERAR INFORME DE GESTIÓN -->
+        <Button
+            android:id="@+id/btnGenerarInforme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Generar informe de gestión (PDF)"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+    </LinearLayout>
+</ScrollView>

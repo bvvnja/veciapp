@@ -8,4 +8,10 @@
 
     <color name="red">#FF6347</color>
     <color name="green">#008CBA</color>
+
+    <color name="btnPrimary">#2196F3</color>   <!-- azul botón principal -->
+    <color name="btnDanger">#D32F2F</color>    <!-- rojo -->
+    <color name="btnSuccess">#388E3C</color>   <!-- verde -->
+    <color name="btnNeutral">#BDBDBD</color>   <!-- gris para Editar -->
+
 </resources>
